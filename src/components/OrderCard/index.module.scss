@@ -1,0 +1,135 @@
+@use '@/styles/variables.scss' as *;
+
+.card {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-md;
+  box-shadow: $shadow-card;
+  transition: transform $transition-fast;
+
+  &:active {
+    transform: scale(0.99);
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-sm;
+}
+
+.typeBadge {
+  display: inline-flex;
+  padding: 4rpx 14rpx;
+  border-radius: $radius-xs;
+  background: $color-badge-bg;
+  color: $color-primary;
+  font-size: $font-size-xs;
+  white-space: nowrap;
+}
+
+.title {
+  display: block;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  line-height: $line-height-tight;
+  margin-bottom: $spacing-sm;
+  @include text-ellipsis-multi(2);
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  margin-top: 8rpx;
+}
+
+.metaIcon {
+  font-size: $font-size-sm;
+  margin-right: 8rpx;
+}
+
+.metaText {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  @include text-ellipsis;
+}
+
+.publishTime {
+  margin-left: auto;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  white-space: nowrap;
+  padding-left: $spacing-sm;
+}
+
+.footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: $spacing-md;
+  padding-top: $spacing-md;
+  border-top: 2rpx solid $color-divider;
+}
+
+.poster {
+  display: flex;
+  align-items: center;
+}
+
+.posterAvatarText {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: $radius-round;
+  background: $color-badge-bg;
+  color: $color-primary;
+  font-size: $font-size-xs;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8rpx;
+}
+
+.posterName {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  @include text-ellipsis;
+  max-width: 240rpx;
+}
+
+.priceWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.priceMain {
+  display: flex;
+  align-items: baseline;
+}
+
+.priceSymbol {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-price;
+}
+
+.priceValue {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  color: $color-price;
+  line-height: 1;
+}
+
+.feeText {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-top: 6rpx;
+  white-space: nowrap;
+}
+
+.feeTextHot {
+  color: $color-price;
+}

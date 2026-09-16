@@ -1,0 +1,86 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  padding: 0 $page-padding 32rpx;
+  box-sizing: border-box;
+}
+
+.tipBanner {
+  display: flex;
+  align-items: center;
+  margin: $spacing-md 0;
+  padding: $spacing-md $spacing-lg;
+  background: linear-gradient(135deg, $color-badge-bg 0%, #f7f9ff 100%);
+  border-radius: $radius-md;
+}
+
+.tipIcon {
+  font-size: $font-size-lg;
+  margin-right: $spacing-sm;
+}
+
+.tipText {
+  flex: 1;
+  font-size: $font-size-xs;
+  color: $color-primary-dark;
+  line-height: $line-height-normal;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  height: 80rpx;
+  margin-bottom: $spacing-md;
+  padding: 0 $spacing-lg;
+  background: $color-bg-card;
+  border-radius: $radius-round;
+  box-shadow: $shadow-card;
+}
+
+.searchIcon {
+  font-size: $font-size-md;
+  margin-right: $spacing-sm;
+}
+
+.searchInput {
+  flex: 1;
+  font-size: $font-size-md;
+}
+
+.sortScroll {
+  @include scroll-x-container;
+  margin-bottom: $spacing-md;
+}
+
+.sortChip {
+  @include scroll-x-item(auto);
+  display: inline-flex;
+  align-items: center;
+  height: 60rpx;
+  padding: 0 28rpx;
+  margin-right: $spacing-sm;
+  border-radius: $radius-round;
+  background: $color-bg-card;
+  color: $color-text-secondary;
+  font-size: $font-size-sm;
+  box-shadow: $shadow-card;
+  white-space: nowrap;
+}
+
+.sortChipActive {
+  background: $color-primary;
+  color: $color-text-white;
+}
+
+.listWrap {
+  padding-top: 4rpx;
+}
+
+.loadingText {
+  display: block;
+  text-align: center;
+  color: $color-text-tertiary;
+  font-size: $font-size-sm;
+  padding: $spacing-md 0;
+}

@@ -1,0 +1,121 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  padding: $spacing-md $page-padding 48rpx;
+  box-sizing: border-box;
+  background: $color-bg-page;
+}
+
+.formCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: 0 $spacing-lg;
+  box-shadow: $shadow-card;
+}
+
+.formItem {
+  padding: $spacing-md 0;
+  border-bottom: 2rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.label {
+  display: block;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-bottom: $spacing-xs;
+}
+
+.pickerValue {
+  width: 100%;
+  height: 72rpx;
+  line-height: 72rpx;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+}
+
+.input {
+  width: 100%;
+  height: 72rpx;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+}
+
+.hint {
+  display: block;
+  margin-top: $spacing-xs;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.submitBtn {
+  @include button-reset;
+  width: 100%;
+  height: $button-height-lg;
+  border-radius: $radius-button;
+  background: $color-primary;
+  color: $color-text-white;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  margin-top: $spacing-lg;
+
+  &[disabled] {
+    opacity: 0.6;
+  }
+}
+
+.tip {
+  display: block;
+  margin-top: $spacing-md;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  line-height: $line-height-normal;
+  text-align: center;
+  padding: 0 $spacing-md;
+}
+
+// 已认证状态
+.successCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-xl $spacing-lg;
+  box-shadow: $shadow-card;
+  text-align: center;
+}
+
+.successIcon {
+  font-size: 96rpx;
+  display: block;
+  margin-bottom: $spacing-md;
+}
+
+.successTitle {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  color: $color-success;
+  margin-bottom: $spacing-lg;
+}
+
+.infoRow {
+  display: flex;
+  align-items: center;
+  padding: $spacing-sm 0;
+  border-top: 2rpx solid $color-divider;
+}
+
+.infoLabel {
+  width: 120rpx;
+  flex-shrink: 0;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.infoValue {
+  flex: 1;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+}

@@ -1,0 +1,36 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+.temp/
+.rn_temp/
+
+# Taro / PAI preview runtime
+.pai/
+
+# credentials & secrets (DO NOT COMMIT)
+.auth/
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+
+# WeChat DevTools local config
+project.private.config.json
+
+# logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# editor / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

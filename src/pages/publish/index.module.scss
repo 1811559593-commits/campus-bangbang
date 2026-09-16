@@ -1,0 +1,190 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  height: 100vh;
+  padding: $spacing-md $page-padding 48rpx;
+  box-sizing: border-box;
+}
+
+.card {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-md;
+  box-shadow: $shadow-card;
+}
+
+.field {
+  margin-bottom: $spacing-lg;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.fieldRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: $spacing-lg;
+}
+
+.fieldHalf {
+  width: 320rpx;
+}
+
+.label {
+  display: block;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-secondary;
+  margin-bottom: $spacing-sm;
+}
+
+.required {
+  color: $color-error;
+  margin-right: 4rpx;
+}
+
+.input {
+  height: 80rpx;
+  padding: 0 $spacing-md;
+  background: $color-bg-page;
+  border-radius: $radius-sm;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  box-sizing: border-box;
+}
+
+.textarea {
+  width: 100%;
+  height: 160rpx;
+  padding: $spacing-sm $spacing-md;
+  background: $color-bg-page;
+  border-radius: $radius-sm;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  box-sizing: border-box;
+}
+
+.typeGrid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.typeChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 64rpx;
+  padding: 0 28rpx;
+  margin: 0 $spacing-sm $spacing-sm 0;
+  border-radius: $radius-round;
+  background: $color-bg-page;
+  color: $color-text-secondary;
+  font-size: $font-size-sm;
+}
+
+.typeChipActive {
+  background: $color-badge-bg;
+  color: $color-primary;
+  font-weight: $font-weight-medium;
+}
+
+.pickerBox {
+  width: 320rpx;
+  height: 96rpx;
+  padding: 12rpx $spacing-md;
+  background: $color-bg-page;
+  border-radius: $radius-sm;
+  box-sizing: border-box;
+}
+
+.pickerValue {
+  font-size: $font-size-md;
+  color: $color-text-primary;
+}
+
+.priceInput {
+  height: 96rpx;
+  padding: 0 $spacing-md;
+  background: $color-price-bg;
+  border-radius: $radius-sm;
+  font-size: 44rpx;
+  font-weight: $font-weight-bold;
+  color: $color-price;
+  box-sizing: border-box;
+}
+
+.feeTip {
+  margin: -$spacing-sm 0 $spacing-lg;
+  padding: $spacing-sm $spacing-md;
+  background: #fff8f3;
+  border-radius: $radius-sm;
+}
+
+.feeTipText {
+  font-size: $font-size-xs;
+  color: $color-price;
+  line-height: $line-height-normal;
+}
+
+.agreementRow {
+  display: flex;
+  align-items: flex-start;
+  padding: $spacing-sm 0 $spacing-lg;
+}
+
+.checkbox {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: $radius-round;
+  border: 2rpx solid $color-border;
+  margin: 4rpx $spacing-sm 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.checkboxChecked {
+  background: $color-primary;
+  border-color: $color-primary;
+}
+
+.checkIcon {
+  color: $color-text-white;
+  font-size: 22rpx;
+  line-height: 1;
+}
+
+.agreementText {
+  flex: 1;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  line-height: $line-height-normal;
+}
+
+.agreementLink {
+  color: $color-primary;
+}
+
+.submitBtn {
+  @include button-reset;
+  width: 100%;
+  height: $button-height-lg;
+  border-radius: $radius-button;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  color: $color-text-white;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  margin-bottom: $spacing-xl;
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+
+  &[disabled] {
+    opacity: 0.6;
+  }
+}

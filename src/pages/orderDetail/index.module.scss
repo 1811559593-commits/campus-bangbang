@@ -1,0 +1,517 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  padding: $spacing-md $page-padding 200rpx;
+  box-sizing: border-box;
+}
+
+.loadingText {
+  display: block;
+  text-align: center;
+  color: $color-text-tertiary;
+  padding-top: 120rpx;
+}
+
+.loadErrorBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 120rpx;
+}
+
+.loadErrorText {
+  color: $color-text-tertiary;
+  margin-bottom: $spacing-md;
+}
+
+.retryBtn {
+  font-size: 26rpx;
+  color: #fff;
+  background: $color-primary;
+  border-radius: $radius-button;
+  padding: 0 48rpx;
+}
+
+// 状态横幅
+.statusBanner {
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-md;
+}
+
+.banner_pending {
+  background: linear-gradient(135deg, #fff3ec 0%, #ffe8db 100%);
+}
+
+.banner_claimed {
+  background: linear-gradient(135deg, $color-badge-bg 0%, #e4edff 100%);
+}
+
+.banner_submitted {
+  background: linear-gradient(135deg, #fff7e8 0%, #ffedcf 100%);
+}
+
+.banner_completed {
+  background: linear-gradient(135deg, #e9ffed 0%, #d8f8de 100%);
+}
+
+.banner_cancelled,
+.banner_disputed {
+  background: $color-bg-hover;
+}
+
+.statusTitle {
+  display: block;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.banner_pending .statusTitle {
+  color: #c7501f;
+}
+
+.statusDesc {
+  display: block;
+  margin-top: 8rpx;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+// 进度条
+.stepCard {
+  display: flex;
+  align-items: flex-start;
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg $spacing-md;
+  margin-bottom: $spacing-md;
+  box-shadow: $shadow-card;
+}
+
+.stepItem {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stepDot {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: $radius-round;
+  background: $color-bg-hover;
+  color: $color-text-tertiary;
+  font-size: $font-size-xs;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.stepDotActive {
+  background: $color-primary;
+  color: $color-text-white;
+}
+
+.stepDotCurrent {
+  box-shadow: 0 0 0 8rpx rgba(47, 107, 255, 0.15);
+}
+
+.stepLabel {
+  margin-top: 8rpx;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  white-space: nowrap;
+}
+
+.stepLabelActive {
+  color: $color-primary;
+  font-weight: $font-weight-medium;
+}
+
+.stepLine {
+  position: absolute;
+  top: 24rpx;
+  left: 50%;
+  width: 100%;
+  height: 4rpx;
+  background: $color-bg-hover;
+  z-index: 0;
+}
+
+.stepLineActive {
+  background: $color-primary;
+}
+
+// 卡片
+.card {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-md;
+  box-shadow: $shadow-card;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-sm;
+}
+
+.typeBadge {
+  display: inline-flex;
+  padding: 4rpx 14rpx;
+  border-radius: $radius-xs;
+  background: $color-badge-bg;
+  color: $color-primary;
+  font-size: $font-size-xs;
+}
+
+.title {
+  display: block;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  line-height: $line-height-tight;
+  margin-bottom: $spacing-sm;
+}
+
+.detail {
+  display: block;
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+  line-height: $line-height-loose;
+  margin-bottom: $spacing-md;
+}
+
+.infoRow {
+  display: flex;
+  align-items: flex-start;
+  padding: $spacing-sm 0;
+}
+
+.infoLabel {
+  width: 160rpx;
+  flex-shrink: 0;
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.infoValue {
+  flex: 1;
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+}
+
+// 费用
+.feeRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-sm 0;
+}
+
+.feeLabel {
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+}
+
+.feePrice {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.feeInfoPrice {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-price;
+}
+
+.feeNotice {
+  display: block;
+  margin-top: $spacing-sm;
+  padding-top: $spacing-md;
+  border-top: 2rpx solid $color-divider;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  line-height: $line-height-normal;
+}
+
+// 对方信息
+.sectionTitle {
+  display: block;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-md;
+}
+
+.mutedText {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.personRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: $spacing-md;
+}
+
+.personAvatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: $radius-round;
+  background: $color-badge-bg;
+  color: $color-primary;
+  font-size: $font-size-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: $spacing-sm;
+}
+
+.personName {
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  font-weight: $font-weight-medium;
+}
+
+.contactBox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-md;
+  background: #f4f8ff;
+  border: 2rpx dashed $color-primary-light;
+  border-radius: $radius-md;
+}
+
+.contactInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.contactLabel {
+  display: block;
+  font-size: $font-size-xs;
+  color: $color-primary;
+  margin-bottom: 6rpx;
+}
+
+.contactValue {
+  display: block;
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+  @include text-ellipsis;
+}
+
+.copyBtn {
+  @include button-reset;
+  flex-shrink: 0;
+  height: $button-height-sm;
+  padding: 0 $spacing-lg;
+  margin-left: $spacing-md;
+  border-radius: $radius-button;
+  background: $color-primary;
+  color: $color-text-white;
+  font-size: $font-size-sm;
+}
+
+.contactLocked {
+  padding: $spacing-md;
+  background: $color-bg-page;
+  border-radius: $radius-md;
+  text-align: center;
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+// 接单人信用概况
+.creditBox {
+  margin-top: $spacing-md;
+  padding: $spacing-md;
+  background: $color-bg-page;
+  border-radius: $radius-md;
+}
+
+.creditRow {
+  display: flex;
+  align-items: center;
+  padding: 6rpx 0;
+}
+
+.creditLabel {
+  width: 140rpx;
+  flex-shrink: 0;
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.creditScore {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+}
+
+.creditGood {
+  color: $color-success;
+}
+
+.creditWarn {
+  color: #e6a23c;
+}
+
+.creditValue {
+  flex: 1;
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+}
+
+.reportEntry {
+  text-align: center;
+  padding: $spacing-md 0;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  text-decoration: underline;
+}
+
+// 底部操作栏
+.actionBar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: $spacing-md $page-padding;
+  padding-bottom: calc(env(safe-area-inset-bottom) + #{$spacing-md});
+  background: $color-bg-card;
+  box-shadow: $shadow-float;
+  display: flex;
+  align-items: center;
+  z-index: 10;
+}
+
+.btnGroup {
+  display: flex;
+  width: 100%;
+  gap: $spacing-md;
+}
+
+.primaryBtn {
+  @include button-reset;
+  flex: 1;
+  width: 100%;
+  height: $button-height-lg;
+  border-radius: $radius-button;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  color: $color-text-white;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  white-space: nowrap;
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+
+  &[disabled] {
+    background: $color-text-disabled;
+    color: $color-text-white;
+  }
+}
+
+.primaryBtnDone {
+  background: $color-success;
+}
+
+.ghostBtn {
+  @include button-reset;
+  flex: 1;
+  height: $button-height-lg;
+  border-radius: $radius-button;
+  background: $color-bg-card;
+  border: 2rpx solid $color-border;
+  color: $color-text-secondary;
+  font-size: $font-size-md;
+
+  &:active {
+    background: $color-bg-hover;
+  }
+}
+
+.barHint {
+  flex: 1;
+  text-align: center;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  line-height: $line-height-normal;
+}
+
+// 弹层
+.mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+}
+
+.sheet {
+  width: 100%;
+  background: $color-bg-card;
+  border-radius: $radius-xl $radius-xl 0 0;
+  padding: $spacing-lg;
+  padding-bottom: calc(env(safe-area-inset-bottom) + #{$spacing-lg});
+}
+
+.sheetTitle {
+  display: block;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  text-align: center;
+  margin-bottom: $spacing-md;
+}
+
+.sheetInput {
+  width: 100%;
+  height: 200rpx;
+  padding: $spacing-md;
+  background: $color-bg-page;
+  border-radius: $radius-md;
+  font-size: $font-size-md;
+  box-sizing: border-box;
+}
+
+.sheetBtns {
+  display: flex;
+  gap: $spacing-md;
+  margin-top: $spacing-lg;
+}
+
+.sheetCancel {
+  @include button-reset;
+  flex: 1;
+  height: $button-height-md;
+  border-radius: $radius-button;
+  background: $color-bg-hover;
+  color: $color-text-secondary;
+  font-size: $font-size-md;
+}
+
+.sheetConfirm {
+  @include button-reset;
+  flex: 1;
+  height: $button-height-md;
+  border-radius: $radius-button;
+  background: $color-primary;
+  color: $color-text-white;
+  font-size: $font-size-md;
+}

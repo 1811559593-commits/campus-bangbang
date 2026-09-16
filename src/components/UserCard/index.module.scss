@@ -1,0 +1,161 @@
+@use '@/styles/variables.scss' as *;
+
+.card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-md;
+  box-shadow: $shadow-card;
+  transition: transform $transition-fast;
+
+  &:active {
+    transform: scale(0.99);
+  }
+}
+
+.rank {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: $radius-lg 0 $radius-sm 0;
+  background: $color-text-disabled;
+  color: $color-text-white;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rankGold {
+  background: linear-gradient(135deg, #ffb727, #ff8f00);
+}
+
+.rankSilver {
+  background: linear-gradient(135deg, #b8c2d9, #8a97b1);
+}
+
+.rankBronze {
+  background: linear-gradient(135deg, #d99a6c, #b87333);
+}
+
+.avatar {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: $radius-round;
+  flex-shrink: 0;
+  background: $color-bg-hover;
+}
+
+.avatarPlaceholder {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: $radius-round;
+  flex-shrink: 0;
+  background: $color-badge-bg;
+  color: $color-primary;
+  font-size: $font-size-xl;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  margin-left: $spacing-md;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+}
+
+.name {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  max-width: 240rpx;
+  @include text-ellipsis;
+}
+
+.verified {
+  margin-left: 8rpx;
+  padding: 2rpx 10rpx;
+  border-radius: $radius-xs;
+  background: #e8ffea;
+  color: $color-success;
+  font-size: 20rpx;
+  white-space: nowrap;
+}
+
+.scoreRow {
+  display: flex;
+  align-items: center;
+  margin-top: 6rpx;
+}
+
+.scoreNum {
+  margin-left: 8rpx;
+  font-size: $font-size-xs;
+  color: $color-warning;
+  font-weight: $font-weight-medium;
+}
+
+.bio {
+  display: block;
+  margin-top: 6rpx;
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  @include text-ellipsis;
+}
+
+.statsRow {
+  display: flex;
+  align-items: center;
+  margin-top: 8rpx;
+}
+
+.statItem {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+  white-space: nowrap;
+}
+
+.statDivider {
+  margin: 0 10rpx;
+  color: $color-divider;
+  font-size: $font-size-xs;
+}
+
+.creditWrap {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: $spacing-sm;
+  padding-left: $spacing-md;
+  border-left: 2rpx solid $color-divider;
+}
+
+.creditLabel {
+  font-size: 20rpx;
+  color: $color-text-tertiary;
+}
+
+.creditValue {
+  margin-top: 4rpx;
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  color: $color-credit;
+  line-height: 1;
+}
+
+.creditLow {
+  color: $color-error;
+}

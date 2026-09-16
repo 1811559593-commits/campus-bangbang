@@ -1,0 +1,78 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  padding: $spacing-md $page-padding 48rpx;
+  box-sizing: border-box;
+  background: $color-bg-page;
+}
+
+.formCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: 0 $spacing-lg;
+  box-shadow: $shadow-card;
+}
+
+.formItem {
+  padding: $spacing-md 0;
+  border-bottom: 2rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.label {
+  display: block;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-bottom: $spacing-xs;
+}
+
+.input {
+  width: 100%;
+  height: 72rpx;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  background: transparent;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 80rpx;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  background: transparent;
+  line-height: $line-height-normal;
+}
+
+.tipBox {
+  margin: $spacing-md 0;
+  padding: $spacing-sm $spacing-md;
+  background: #fff8f3;
+  border-radius: $radius-md;
+  border: 2rpx solid #ffe4d1;
+}
+
+.tipText {
+  font-size: $font-size-xs;
+  color: #a85a2a;
+  line-height: $line-height-normal;
+}
+
+.saveBtn {
+  @include button-reset;
+  width: 100%;
+  height: $button-height-lg;
+  border-radius: $radius-button;
+  background: $color-primary;
+  color: $color-text-white;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  margin-top: $spacing-lg;
+
+  &[disabled] {
+    opacity: 0.6;
+  }
+}

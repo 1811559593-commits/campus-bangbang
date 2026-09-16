@@ -1,0 +1,190 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  padding: $spacing-md $page-padding 48rpx;
+  box-sizing: border-box;
+}
+
+.headerCard {
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  border-radius: $radius-xl;
+  padding: $spacing-lg;
+  box-shadow: 0 8rpx 24rpx rgba(47, 107, 255, 0.25);
+}
+
+.userRow {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: $radius-round;
+  border: 4rpx solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.avatarPlaceholder {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: $radius-round;
+  border: 4rpx solid rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-xxl;
+  color: $color-text-white;
+}
+
+.userInfo {
+  flex: 1;
+  min-width: 0;
+  margin-left: $spacing-md;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+}
+
+.name {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  color: $color-text-white;
+  max-width: 280rpx;
+  @include text-ellipsis;
+}
+
+.verifiedBadge,
+.unverifiedBadge {
+  margin-left: $spacing-sm;
+  padding: 2rpx 12rpx;
+  border-radius: $radius-xs;
+  font-size: 20rpx;
+  white-space: nowrap;
+}
+
+.verifiedBadge {
+  background: rgba(255, 255, 255, 0.25);
+  color: $color-text-white;
+}
+
+.unverifiedBadge {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.school {
+  display: block;
+  margin-top: 8rpx;
+  font-size: $font-size-sm;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.creditRow {
+  display: flex;
+  align-items: center;
+  margin-top: $spacing-lg;
+  padding-top: $spacing-lg;
+  border-top: 2rpx solid rgba(255, 255, 255, 0.2);
+}
+
+.creditItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.creditValue {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-text-white;
+  line-height: 1.2;
+}
+
+.creditLabel {
+  margin-top: 6rpx;
+  font-size: $font-size-xs;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.creditDivider {
+  width: 2rpx;
+  height: 48rpx;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.noticeCard {
+  display: flex;
+  align-items: flex-start;
+  margin: $spacing-md 0;
+  padding: $spacing-md $spacing-lg;
+  background: #fff8f3;
+  border-radius: $radius-md;
+  border: 2rpx solid #ffe4d1;
+}
+
+.noticeIcon {
+  font-size: $font-size-lg;
+  margin-right: $spacing-sm;
+}
+
+.noticeText {
+  flex: 1;
+  font-size: $font-size-xs;
+  color: #a85a2a;
+  line-height: $line-height-normal;
+}
+
+.menuCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: 0 $spacing-lg;
+  box-shadow: $shadow-card;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  height: 104rpx;
+  border-bottom: 2rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.menuIcon {
+  font-size: $font-size-lg;
+  margin-right: $spacing-md;
+}
+
+.menuLabel {
+  flex: 1;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+}
+
+.menuArrow {
+  font-size: $font-size-xl;
+  color: $color-text-disabled;
+}
+
+.logoutBtn {
+  @include button-reset;
+  width: 100%;
+  height: $button-height-md;
+  margin-top: $spacing-xl;
+  border-radius: $radius-button;
+  background: $color-bg-card;
+  color: $color-text-secondary;
+  font-size: $font-size-md;
+  box-shadow: $shadow-card;
+}

@@ -1,0 +1,41 @@
+@use '@/styles/variables.scss' as *;
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4rpx 14rpx;
+  border-radius: $radius-xs;
+  font-size: $font-size-xs;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.pending {
+  color: $color-price;
+  background: $color-price-bg;
+}
+
+.claimed {
+  color: $color-primary;
+  background: $color-badge-bg;
+}
+
+.submitted {
+  color: $color-warning;
+  background: #fff5e8;
+}
+
+.completed {
+  color: $color-success;
+  background: #e8ffea;
+}
+
+.cancelled {
+  color: $color-text-tertiary;
+  background: $color-bg-hover;
+}
+
+.disputed {
+  color: $color-error;
+  background: #ffece8;
+}

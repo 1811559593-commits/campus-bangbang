@@ -1,0 +1,30 @@
+@use '@/styles/variables.scss' as *;
+
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+}
+
+.star {
+  color: $color-text-disabled;
+  margin-right: 4rpx;
+  line-height: 1;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.active {
+  color: $color-warning;
+}
+
+.clickable {
+  padding: 8rpx;
+  margin-right: 0;
+  transition: transform $transition-fast;
+
+  &:active {
+    transform: scale(1.2);
+  }
+}
