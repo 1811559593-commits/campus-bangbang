@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import type { OrderType, UserProfile } from '@/types';
 import { api, type PublishPayload } from '@/services/api';
 import { useUserStore } from '@/store/user';
-import { calcInfoFee, formatMoney, ORDER_TYPE_OPTIONS } from '@/utils/format';
+import { ORDER_TYPE_OPTIONS } from '@/utils/format';
 import styles from './index.module.scss';
 
 const PublishPage: React.FC = () => {
@@ -33,7 +33,6 @@ const PublishPage: React.FC = () => {
   });
 
   const priceNum = Number(price) || 0;
-  const infoFee = priceNum > 0 ? calcInfoFee(priceNum) : 0;
 
   const validate = (): string => {
     if (!title.trim()) return '请填写订单标题';
@@ -186,12 +185,12 @@ const PublishPage: React.FC = () => {
         </View>
         <View className={styles.feeTip}>
           <Text className={styles.feeTipText}>
-            接单人接单时需支付信息费 ¥{formatMoney(infoFee)}（报酬的 5%），报酬由双方线下自行结算
+            接单免费：接单人申请后由你确认选择，确认后双方联系方式互通；报酬线下自行结算
           </Text>
         </View>
         <View className={styles.field}>
           <Text className={styles.label}>
-            <Text className={styles.required}>*</Text>联系方式（支付信息费后对接单人生效）
+            <Text className={styles.required}>*</Text>联系方式（确认接单人后向对方公开）
           </Text>
           <Input
             className={styles.input}

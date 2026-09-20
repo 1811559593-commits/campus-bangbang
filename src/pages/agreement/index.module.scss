@@ -2,26 +2,57 @@
 
 .page {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   background: $color-bg-page;
-}
-
-.emoji {
-  font-size: 96rpx;
-  margin-bottom: $spacing-lg;
+  padding: $spacing-xl $spacing-lg 120rpx;
+  box-sizing: border-box;
 }
 
 .title {
-  font-size: $font-size-xl;
+  display: block;
+  font-size: 40rpx;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  text-align: center;
+  margin-bottom: $spacing-sm;
+}
+
+.updateTime {
+  display: block;
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  text-align: center;
+  margin-bottom: $spacing-xl;
+}
+
+.section {
+  margin-bottom: $spacing-lg;
+}
+
+.sectionTitle {
+  display: block;
+  font-size: $font-size-lg;
   font-weight: $font-weight-semibold;
   color: $color-text-primary;
   margin-bottom: $spacing-sm;
 }
 
-.tip {
+.paragraph {
+  display: block;
   font-size: $font-size-md;
+  line-height: 1.8;
+  color: $color-text-secondary;
+  margin-bottom: $spacing-xs;
+}
+
+.footer {
+  margin-top: $spacing-xl;
+  padding-top: $spacing-lg;
+  border-top: 1rpx solid $color-border;
+  text-align: center;
+}
+
+.footerText {
+  font-size: $font-size-sm;
   color: $color-text-tertiary;
+  line-height: 1.6;
 }

@@ -6,6 +6,7 @@ import loginMock from '@/data/login';
 import orderServiceMock from '@/data/orderService';
 import userServiceMock from '@/data/userService';
 import reviewServiceMock from '@/data/reviewService';
+import propServiceMock from '@/data/propService';
 
 type MockHandler = (data?: Record<string, any>) => Promise<any>;
 
@@ -13,7 +14,8 @@ const handlers: Record<string, MockHandler> = {
   login: () => loginMock(),
   orderService: (data) => orderServiceMock(data as any),
   userService: (data) => userServiceMock(data as any),
-  reviewService: (data) => reviewServiceMock(data as any)
+  reviewService: (data) => reviewServiceMock(data as any),
+  propService: (data) => propServiceMock(data as any)
 };
 
 /** 是否已进入演示模式（由 cloud.ts 在云调用首次失败时置位） */

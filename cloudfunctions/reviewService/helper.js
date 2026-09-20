@@ -108,6 +108,27 @@ function getOpenid(event, context) {
   );
 }
 
+/**
+ * 内容安全检测：调用微信 msgSecCheck，识别违规文本。
+ * 返回 true=安全可发布，false=含违规内容。
+ * 技术异常时 fail-open（放行并记录日志），避免接口波动阻断正常用户。
+ */
+async function checkTextContent(content) {
+  const text = String(content || '').trim();
+  if (!text) return true;
+  try {
+    const cloud = require('wx-server-sdk');
+    cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
+    const res = await cloud.openapi.security.msgSecCheck({ content: text });
+    if (res && res.errCode === 0) return true;
+    console.warn('[security] msgSecCheck blocked:', text.slice(0, 50), res);
+    return false;
+  } catch (err) {
+    console.error('[security] msgSecCheck error (fail-open):', err.message);
+    return true;
+  }
+}
+
 module.exports = {
   INFO_FEE_RATE,
   success,
@@ -119,5 +140,6 @@ module.exports = {
   one,
   mapOrder,
   mapOrders,
-  getOpenid
+  getOpenid,
+  checkTextContent
 };

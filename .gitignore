@@ -5,6 +5,11 @@ node_modules/
 dist/
 .temp/
 .rn_temp/
+.swc/
+
+# preview artifacts
+preview_output.txt
+preview_qrcode.png
 
 # Taro / PAI preview runtime
 .pai/

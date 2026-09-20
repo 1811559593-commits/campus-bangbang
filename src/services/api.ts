@@ -1,6 +1,5 @@
 import { callFunction } from './cloud';
 import type {
-  ClaimResult,
   Order,
   OrderQuery,
   OrderType,
@@ -47,6 +46,14 @@ export interface DetailResult {
   myReview?: Review;
 }
 
+/** 加急卡购买结果（正式虚拟支付开通后 payParams 下发 wx.requestVirtualPayment 参数） */
+export interface UrgentCardResult {
+  paid: boolean;
+  payParams?: Record<string, any> | null;
+  amount: number;
+  topUntil: string;
+}
+
 export const api = {
   // ---------- 认证 ----------
   login: () => callFunction<UserProfile>('login'),
@@ -64,9 +71,13 @@ export const api = {
   getOrderDetail: (id: string) =>
     callFunction<DetailResult>('orderService', { action: 'detail', id }),
 
-  /** 接单：生成 5% 信息费支付单，微信端返回 JSAPI 支付参数 */
+  /** 免费申请接单：订单进入待发单人确认（applied），不产生支付 */
   claimOrder: (id: string) =>
-    callFunction<ClaimResult>('orderService', { action: 'claim', id }),
+    callFunction<Order>('orderService', { action: 'claim', id }),
+
+  /** 发单人确认选择接单人：applied -> claimed，此后向接单人公开联系方式 */
+  confirmClaimOrder: (id: string) =>
+    callFunction<Order>('orderService', { action: 'confirmClaim', id }),
 
   /** 接单人提交完成（凭证说明） */
   submitFinish: (id: string, proofNote: string) =>
@@ -118,5 +129,10 @@ export const api = {
   }) => callFunction<Review>('reviewService', { action: 'submit', ...payload }),
 
   listReviews: (openid: string) =>
-    callFunction<{ list: Review[] }>('reviewService', { action: 'list', openid })
+    callFunction<{ list: Review[] }>('reviewService', { action: 'list', openid }),
+
+  // ---------- 虚拟道具 ----------
+  /** 购买加急卡：订单大厅置顶 24 小时（个人虚拟支付；内测期 demo 直接到账） */
+  buyUrgentCard: (orderId: string) =>
+    callFunction<UrgentCardResult>('propService', { action: 'buyTop', orderId })
 };

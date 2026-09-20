@@ -3,12 +3,11 @@ const {
   one,
   success,
   fail,
-  calcInfoFee,
   genId,
   mapOrder,
   mapOrders,
   getOpenid,
-  INFO_FEE_RATE
+  checkTextContent
 } = require('./helper');
 
 async function getUser(openid) {
@@ -29,6 +28,8 @@ exports.main = async (event, context) => {
         return await publish(openid, event.payload);
       case 'claim':
         return await claim(openid, event.id);
+      case 'confirmClaim':
+        return await confirmClaim(openid, event.id);
       case 'finish':
         return await finish(openid, event.id, event.proofNote);
       case 'confirm':
@@ -68,7 +69,9 @@ async function listOrders(query) {
   else if (query.sort === 'urgent') orderBy = '"expectTime" ASC';
 
   const rows = await pg(
-    `SELECT * FROM orders WHERE ${where.join(' AND ')} ORDER BY ${orderBy} LIMIT 50`,
+    `SELECT * FROM orders WHERE ${where.join(' AND ')}
+     ORDER BY (CASE WHEN "topUntil" IS NOT NULL AND "topUntil" > now() THEN 0 ELSE 1 END),
+              ${orderBy} LIMIT 50`,
     params
   );
   const list = mapOrders(rows);
@@ -91,7 +94,9 @@ async function detail(openid, id) {
 
   const isPoster = order.posterOpenid === openid;
   const isClaimer = order.claimerOpenid === openid;
-  const canSeeContact = isPoster || (isClaimer && order.status !== 'pending');
+  // 新模式：接单人免费申请（applied），发单人确认选择（claimed）后才向接单人公开联系方式
+  const canSeeContact =
+    isPoster || (isClaimer && ['claimed', 'submitted', 'completed'].includes(order.status));
 
   const myReview = await one(
     'SELECT * FROM reviews WHERE "orderId" = $1 AND "fromOpenid" = $2 LIMIT 1',
@@ -131,14 +136,21 @@ async function publish(openid, p) {
   if (!p.expectTime) return fail('请选择期望完成时间');
   if (!p.contact || !p.contact.trim()) return fail('请填写联系方式');
 
+  // 内容安全检测
+  const titleOk = await checkTextContent(p.title);
+  if (!titleOk) return fail('订单标题包含违规内容，请修改');
+  const detailOk = await checkTextContent(p.detail || '');
+  if (!detailOk) return fail('订单详情包含违规内容，请修改');
+
   const price = Number(p.price);
+  // 模式验证期免收接单信息费：新单 infoFee 落 0（历史单保留原值，仅展示层下线）
   const row = mapOrder(
     await one(
       `INSERT INTO orders (
         "_id", "posterOpenid", "posterName", "posterAvatar",
         type, title, detail, school, campus, location, classroom,
         "expectTime", price, "infoFeeRate", "infoFee", status, contact
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,'pending',$16)
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,0,0,'pending',$14)
        RETURNING *`,
       [
         genId('o_'),
@@ -154,8 +166,6 @@ async function publish(openid, p) {
         (p.classroom || '').trim(),
         p.expectTime,
         price,
-        INFO_FEE_RATE,
-        calcInfoFee(price),
         p.contact.trim()
       ]
     )
@@ -164,57 +174,68 @@ async function publish(openid, p) {
   return success(row);
 }
 
+// 免费申请接单：pending -> applied（不产生支付，联系方式暂不向接单人公开）
 async function claim(openid, id) {
   const me = await getUser(openid);
   if (!me) return fail('用户信息不存在');
   if (Number(me.creditScore) < 80) return fail('信誉分过低（低于80），暂时无法接单');
-  // 接单人必须提供联系方式，接单时同步给发单人
+  // 接单人必须提供联系方式，申请时同步给发单人供其选择
   const claimerContact = (me.contact || '').trim() || (me.phone || '').trim();
   if (!claimerContact) return fail('请先在个人中心填写联系方式后再接单');
 
   const order = mapOrder(await one('SELECT * FROM orders WHERE "_id" = $1 LIMIT 1', [id]));
   if (!order) return fail('订单不存在');
   if (order.posterOpenid === openid) return fail('不能接自己发布的订单');
-  if (order.status !== 'pending') return fail('手慢了，订单已被接单');
 
-  const pending = await one(
-    `SELECT "_id" FROM payments WHERE "orderId" = $1 AND status = 'pending' LIMIT 1`,
-    [id]
-  );
-  if (pending) return fail('您已有一笔待支付的信息费，请完成支付');
-
-  const outTradeNo = `IF${Date.now()}${Math.floor(Math.random() * 1000)}`;
-  const totalFee = Math.round(order.infoFee * 100); // 单位：分
-
-  await one(
-    `INSERT INTO payments (
-      "_id", "outTradeNo", "orderId", "payerOpenid", amount, "totalFee", "feeRate", status
-    ) VALUES ($1,$2,$3,$4,$5,$6,$7,'pending')`,
-    [genId('p_'), outTradeNo, id, openid, order.infoFee, totalFee, INFO_FEE_RATE]
-  );
-
-  // 商户微信支付尚未通过 CloudBase 集成中心配置：
-  // 内测期由环境变量 ENABLE_DEMO_PAY=1 直接结算信息费（生产接入支付后关闭该开关，
-  // 改为调用集成中心支付函数统一下单，支付成功经 settle_info_fee 落账）。
-  if (process.env.ENABLE_DEMO_PAY === '1') {
-    const settled = await one('SELECT public.settle_info_fee($1, $2) AS result', [
-      outTradeNo,
-      'DEMO'
-    ]);
-    console.info('[orderService] demo settle:', outTradeNo, settled && settled.result);
-    // 快照接单人联系方式到订单，供发单人查看
+  // 原子更新：仅 pending 可申请，并发抢单由 WHERE status='pending' 兜底
+  const updated = mapOrder(
     await one(
-      `UPDATE orders SET "claimerContact" = $2 WHERE "_id" = $1 AND "claimerContact" = ''`,
-      [id, claimerContact]
-    );
-    const updated = mapOrder(
-      await one('SELECT * FROM orders WHERE "_id" = $1 LIMIT 1', [id])
-    );
-    return success({ claimed: true, paid: true, payParams: null, order: updated });
-  }
+      `UPDATE orders
+         SET status = 'applied',
+             "claimerOpenid" = $2,
+             "claimerName" = $3,
+             "claimerContact" = $4
+       WHERE "_id" = $1 AND status = 'pending'
+       RETURNING *`,
+      [id, openid, me.nickName, claimerContact]
+    )
+  );
+  if (!updated) return fail('手慢了，订单已被接单');
+  console.info('[orderService] claim applied:', id, openid);
+  return success(updated);
+}
 
-  console.warn('[orderService] wechat pay not configured, claim blocked:', outTradeNo);
-  return fail('微信支付通道开通中，暂无法接单，请稍后再试');
+// 发单人确认选择接单人：applied -> claimed，此后向接单人公开联系方式
+async function confirmClaim(openid, id) {
+  const order = mapOrder(await one('SELECT * FROM orders WHERE "_id" = $1 LIMIT 1', [id]));
+  if (!order) return fail('订单不存在');
+  if (order.posterOpenid !== openid) return fail('只有发单人可以确认接单人');
+  if (order.status !== 'applied') return fail('当前状态不能确认接单');
+  if (!order.claimerOpenid) return fail('还没有接单人申请');
+
+  const updated = mapOrder(
+    await one(
+      `UPDATE orders SET status = 'claimed', "claimedAt" = now()
+       WHERE "_id" = $1 AND status = 'applied' RETURNING *`,
+      [id]
+    )
+  );
+  if (!updated) return fail('订单状态已变化，请刷新后重试');
+
+  // 累计接单量在"发单人确认"时计入
+  await pg(
+    `UPDATE users SET stats = jsonb_set(
+        COALESCE(stats, '{}'::jsonb),
+        '{acceptedCount}',
+        (COALESCE((stats->>'acceptedCount')::int, 0) + 1)::text::jsonb,
+        true
+      ), "updatedAt" = now()
+     WHERE "_openid" = $1`,
+    [order.claimerOpenid]
+  ).catch((err) => console.error('[orderService] acceptedCount update failed:', err));
+
+  console.info('[orderService] claim confirmed:', id, order.claimerOpenid);
+  return success(updated);
 }
 
 async function finish(openid, id, proofNote) {
@@ -258,6 +279,18 @@ async function confirm(openid, id) {
       [order.claimerOpenid]
     ).catch((err) => console.error('[orderService] stats update failed:', err));
   }
+
+  // 写入日流水表：按完成日期累加订单金额与笔数
+  await pg(
+    `INSERT INTO daily_stats (stat_date, total_amount, order_count, updated_at)
+     VALUES (CURRENT_DATE, $1::numeric, 1, now())
+     ON CONFLICT (stat_date) DO UPDATE SET
+       total_amount = daily_stats.total_amount + EXCLUDED.total_amount,
+       order_count = daily_stats.order_count + 1,
+       updated_at = now()`,
+    [order.price || 0]
+  ).catch((err) => console.error('[orderService] daily_stats update failed:', err));
+
   return success(row);
 }
 
@@ -267,9 +300,9 @@ async function cancel(openid, id, reason) {
   if (order.posterOpenid !== openid && order.claimerOpenid !== openid) {
     return fail('只有订单双方可以取消');
   }
-  if (!['pending', 'claimed'].includes(order.status)) return fail('当前状态无法取消');
+  if (!['pending', 'applied', 'claimed'].includes(order.status)) return fail('当前状态无法取消');
   if (order.status === 'claimed' && !(reason && reason.trim())) {
-    return fail('接单后取消需填写原因，信息费是否退还以管理员判责为准');
+    return fail('确认接单后取消需填写原因');
   }
   const row = mapOrder(
     await one(
@@ -282,6 +315,8 @@ async function cancel(openid, id, reason) {
 
 async function report(openid, targetOpenid, reason, orderId) {
   if (!reason || !reason.trim()) return fail('请填写举报原因');
+  const reasonOk = await checkTextContent(reason);
+  if (!reasonOk) return fail('举报原因包含违规内容，请修改');
   const row = await one(
     `INSERT INTO reports ("_id", "orderId", "reporterOpenid", "targetOpenid", reason, status)
      VALUES ($1,$2,$3,$4,$5,'pending') RETURNING *`,

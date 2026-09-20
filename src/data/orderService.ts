@@ -9,17 +9,9 @@ import {
   setStatus,
   users
 } from './mockDb';
-import type {
-  ClaimResult,
-  ClaimerCredit,
-  DetailResult,
-  ListResult,
-  Order,
-  OrderQuery,
-  Report
-} from '@/types';
-import { calcInfoFee, ORDER_TYPE_TEXT } from '@/utils/format';
-import type { PublishPayload } from '@/services/api';
+import type { Order, OrderQuery, Report } from '@/types';
+import { isTopped, ORDER_TYPE_TEXT } from '@/utils/format';
+import type { ClaimerCredit, DetailResult, ListResult, PublishPayload } from '@/services/api';
 
 type OrderEvent =
   | { action: 'list'; query: OrderQuery }
@@ -27,6 +19,7 @@ type OrderEvent =
   | { action: 'detail'; id: string }
   | { action: 'publish'; payload: PublishPayload }
   | { action: 'claim'; id: string }
+  | { action: 'confirmClaim'; id: string }
   | { action: 'finish'; id: string; proofNote: string }
   | { action: 'confirm'; id: string }
   | { action: 'cancel'; id: string; reason: string }
@@ -46,6 +39,8 @@ export default async function orderService(event: OrderEvent): Promise<unknown> 
       return publish(event.payload);
     case 'claim':
       return claim(event.id);
+    case 'confirmClaim':
+      return confirmClaim(event.id);
     case 'finish':
       return finish(event.id, event.proofNote);
     case 'confirm':
@@ -81,6 +76,8 @@ function listOrders(query: OrderQuery): ListResult {
   } else {
     sorted.sort((a, b) => dayjs(b.createdAt).valueOf() - dayjs(a.createdAt).valueOf());
   }
+  // 加急卡置顶订单永远排在最前
+  sorted.sort((a, b) => Number(isTopped(b)) - Number(isTopped(a)));
   return { list: sorted, total: sorted.length };
 }
 
@@ -98,8 +95,9 @@ function detail(id: string): DetailResult {
   assert(!!order, '订单不存在或已被删除');
   const isPoster = order.posterOpenid === SELF_OPENID;
   const isClaimer = order.claimerOpenid === SELF_OPENID;
-  // 联系方式：发单人本人，或已成功接单的接单人可见
-  const canSeeContact = isPoster || (isClaimer && order.status !== 'pending');
+  // 联系方式：发单人本人始终可见；接单人仅在发单人确认选择（claimed）后可见
+  const canSeeContact =
+    isPoster || (isClaimer && ['claimed', 'submitted', 'completed'].includes(order.status));
   const myReview = reviews.find((r) => r.orderId === id && r.fromOpenid === SELF_OPENID);
 
   // 发单人查看已接单订单时，返回接单人联系方式 + 信用
@@ -148,8 +146,8 @@ function publish(payload: PublishPayload): Order {
     classroom: payload.classroom?.trim() || '',
     expectTime: payload.expectTime,
     price: payload.price,
-    infoFeeRate: 0.05,
-    infoFee: calcInfoFee(payload.price),
+    infoFeeRate: 0,
+    infoFee: 0,
     status: 'pending',
     contact: payload.contact.trim(),
     createdAt: now()
@@ -159,7 +157,8 @@ function publish(payload: PublishPayload): Order {
   return order;
 }
 
-function claim(id: string): ClaimResult {
+// 免费申请接单：pending -> applied
+function claim(id: string): Order {
   const order = orders.find((o) => o._id === id);
   assert(!!order, '订单不存在');
   assert(order!.status === 'pending', '手慢了，订单已被接单');
@@ -169,15 +168,22 @@ function claim(id: string): ClaimResult {
   const myContact = (me.contact || '').trim() || (me.phone || '').trim();
   assert(!!myContact, '请先在个人中心填写联系方式后再接单');
 
-  // H5 预览无真实支付：直接模拟"支付成功并解锁"
-  setStatus(order!, 'claimed', {
+  setStatus(order!, 'applied', {
     claimerOpenid: SELF_OPENID,
     claimerName: me.nickName,
-    claimerContact: myContact,
-    claimedAt: now()
+    claimerContact: myContact
   });
-  console.info('[Order] mock claim paid (fee 5%)', order!._id, order!.infoFee);
-  return { claimed: true, paid: true, order: order! };
+  console.info('[Order] mock claim applied (free)', order!._id);
+  return order!;
+}
+
+// 发单人确认选择：applied -> claimed
+function confirmClaim(id: string): Order {
+  const order = orders.find((o) => o._id === id);
+  assert(!!order, '订单不存在');
+  assert(order!.posterOpenid === SELF_OPENID, '只有发单人可以确认接单人');
+  assert(order!.status === 'applied', '当前状态不能确认接单');
+  return setStatus(order!, 'claimed', { claimedAt: now() });
 }
 
 function finish(id: string, proofNote: string): Order {
@@ -203,9 +209,9 @@ function cancel(id: string, reason: string): Order {
     order!.posterOpenid === SELF_OPENID || order!.claimerOpenid === SELF_OPENID,
     '只有订单双方可以取消'
   );
-  assert(['pending', 'claimed'].includes(order!.status), '当前状态无法取消');
+  assert(['pending', 'applied', 'claimed'].includes(order!.status), '当前状态无法取消');
   if (order!.status === 'claimed' && !reason) {
-    assert(false, '接单后取消需填写原因，信息费是否退还以管理员判责为准');
+    assert(false, '确认接单后取消需填写原因');
   }
   return setStatus(order!, 'cancelled');
 }

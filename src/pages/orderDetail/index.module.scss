@@ -44,6 +44,14 @@
   background: linear-gradient(135deg, #fff3ec 0%, #ffe8db 100%);
 }
 
+.banner_applied {
+  background: linear-gradient(135deg, #f4f1ff 0%, #e7e1ff 100%);
+}
+
+.banner_applied .statusTitle {
+  color: #5b4cc4;
+}
+
 .banner_claimed {
   background: linear-gradient(135deg, $color-badge-bg 0%, #e4edff 100%);
 }
@@ -162,6 +170,12 @@
   margin-bottom: $spacing-sm;
 }
 
+.headerBadges {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
 .typeBadge {
   display: inline-flex;
   padding: 4rpx 14rpx;
@@ -169,6 +183,16 @@
   background: $color-badge-bg;
   color: $color-primary;
   font-size: $font-size-xs;
+}
+
+.topBadge {
+  display: inline-flex;
+  padding: 4rpx 14rpx;
+  border-radius: $radius-xs;
+  background: $color-price-bg;
+  color: $color-price;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
 }
 
 .title {
@@ -440,6 +464,23 @@
 
   &:active {
     background: $color-bg-hover;
+  }
+}
+
+.topBtn {
+  @include button-reset;
+  flex: 1;
+  height: $button-height-lg;
+  border-radius: $radius-button;
+  background: linear-gradient(135deg, #ff8a4d 0%, $color-price 100%);
+  color: $color-text-white;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  white-space: nowrap;
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
   }
 }
 

@@ -4,7 +4,6 @@
 // ============================================
 import dayjs from 'dayjs';
 import type { Order, OrderStatus, Review, UserProfile } from '@/types';
-import { calcInfoFee } from '@/utils/format';
 
 export const SELF_OPENID = 'u_self';
 
@@ -177,18 +176,16 @@ export const users: UserProfile[] = [
 
 function buildOrder(partial: Partial<Order> & Pick<Order, 'posterOpenid' | 'type' | 'title' | 'location' | 'price' | 'expectTime' | 'createdAt' | 'status'>): Order {
   const poster = users.find((u) => u.openid === partial.posterOpenid) || users[0];
-  const price = partial.price;
   return {
     _id: nextId('ord'),
-    posterOpenid: poster.openid,
     posterName: poster.nickName,
     posterAvatar: poster.avatar,
     detail: '',
     school: '示范大学',
     campus: '东区',
     classroom: '',
-    infoFeeRate: 0.05,
-    infoFee: calcInfoFee(price),
+    infoFeeRate: 0,
+    infoFee: 0,
     contact: `微信 ${poster.openid === SELF_OPENID ? 'wx_lintongxue' : poster.openid}_wx / 手机号 138****${1000 + seq}`,
     ...partial
   };
@@ -210,6 +207,21 @@ export const orders: Order[] = [
     expectTime: future(120),
     createdAt: iso(15),
     status: 'pending'
+  }),
+  buildOrder({
+    posterOpenid: SELF_OPENID,
+    type: 'errand',
+    title: '南门打印店代取简历袋送到东区宿舍',
+    detail: '已下单付款，报手机号尾号 2048 即可取，文件袋别折',
+    campus: '东区',
+    location: '东区3号宿舍楼',
+    price: 5,
+    expectTime: future(150),
+    createdAt: iso(12),
+    status: 'applied',
+    claimerOpenid: 'u_chen',
+    claimerName: '陈小帮',
+    claimerContact: 'wx_xiaochenbang'
   }),
   buildOrder({
     posterOpenid: SELF_OPENID,
@@ -314,7 +326,8 @@ export const orders: Order[] = [
     price: 10,
     expectTime: future(35),
     createdAt: iso(5),
-    status: 'pending'
+    status: 'pending',
+    topUntil: future(60 * 6) // 加急卡置顶中，大厅应排最前
   }),
   buildOrder({
     posterOpenid: 'u_zheng',
@@ -446,7 +459,7 @@ export function refreshStats(openid: string): void {
   }
 }
 
-export function assert(condition: boolean, message: string): void {
+export function assert(condition: boolean, message: string): asserts condition {
   if (!condition) throw new Error(message);
 }
 

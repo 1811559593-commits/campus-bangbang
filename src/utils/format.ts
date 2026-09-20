@@ -47,12 +47,22 @@ export function urgentText(iso: string): string {
 
 export const ORDER_STATUS_TEXT: Record<OrderStatus, string> = {
   pending: '待接单',
-  claimed: '已接单',
+  applied: '申请中',
+  claimed: '已确认',
   submitted: '待确认',
   completed: '已完成',
   cancelled: '已取消',
   disputed: '纠纷中'
 };
+
+/** 加急卡：单价（元）与置顶时长（小时），与 propService 云函数保持一致 */
+export const URGENT_CARD_PRICE = 1;
+export const URGENT_TOP_HOURS = 24;
+
+/** 订单是否处于加急置顶中 */
+export function isTopped(order: { topUntil?: string }): boolean {
+  return !!order.topUntil && dayjs(order.topUntil).isAfter(dayjs());
+}
 
 export const ORDER_TYPE_TEXT: Record<OrderType, string> = {
   express: '代取快递',

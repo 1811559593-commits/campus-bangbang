@@ -1,4 +1,4 @@
-const { pg, one, success, fail, genId, getOpenid } = require('./helper');
+const { pg, one, success, fail, genId, getOpenid, checkTextContent } = require('./helper');
 
 exports.main = async (event, context) => {
   const openid = getOpenid(event, context);
@@ -38,6 +38,10 @@ async function submit(openid, event) {
   // 评价对象必须是订单对方
   const expectedTo = event.role === 'poster' ? order.claimerOpenid : order.posterOpenid;
   if (!expectedTo || expectedTo !== event.toOpenid) return fail('评价对象不合法');
+
+  // 内容安全检测
+  const contentOk = await checkTextContent(event.content || '');
+  if (!contentOk) return fail('评价内容包含违规信息，请修改');
 
   const me = await one('SELECT * FROM users WHERE "_openid" = $1 LIMIT 1', [openid]);
   const tags = Array.isArray(event.tags) ? JSON.stringify(event.tags.slice(0, 4)) : '[]';

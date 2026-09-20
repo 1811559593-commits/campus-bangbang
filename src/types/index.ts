@@ -2,10 +2,11 @@
 // 校园帮帮 - 全局类型定义
 // ============================================
 
-/** 订单状态机：待接单 -> 已接单 -> 待确认 -> 已完成（可评价）；取消/纠纷为终态分支 */
+/** 订单状态机：待接单 -> 待发单人确认 -> 已接单 -> 待确认完成 -> 已完成（可评价）；取消/纠纷为终态分支 */
 export type OrderStatus =
   | 'pending' // 待接单（大厅可见）
-  | 'claimed' // 已接单（联系方式已解锁）
+  | 'applied' // 接单人已免费申请，待发单人确认选择（仅发单人可见接单人联系方式）
+  | 'claimed' // 发单人已确认，联系方式向接单人公开
   | 'submitted' // 接单人已提交完成，待发单人确认
   | 'completed' // 已完成，可评价
   | 'cancelled' // 已取消
@@ -29,13 +30,14 @@ export interface Order {
   classroom?: string;
   expectTime: string; // ISO 时间字符串
   price: number; // 发单人承诺的线下报酬（元）
-  infoFeeRate: number; // 信息费率 0.05
-  infoFee: number; // 接单人需支付的信息费（元）
+  infoFeeRate: number; // 信息费率（模式验证期暂停收取，新单为 0）
+  infoFee: number; // 信息费（模式验证期暂停收取，新单为 0）
   status: OrderStatus;
+  topUntil?: string; // 加急卡置顶截止时间（期间大厅排序优先）
   claimerOpenid?: string;
   claimerName?: string;
-  claimerContact?: string; // 接单人联系方式（接单时快照，供发单人查看）
-  contact?: string; // 发单人联系方式（仅接单后随详情返回）
+  claimerContact?: string; // 接单人联系方式（申请时快照，申请后即对发单人可见）
+  contact?: string; // 发单人联系方式（发单人确认选择后随详情返回）
   proofNote?: string; // 完成凭证说明
   createdAt: string;
   claimedAt?: string;
@@ -114,21 +116,6 @@ export interface Payment {
   wxTransactionId?: string;
   createdAt: string;
   paidAt?: string;
-}
-
-/** 接单支付结果 */
-export interface ClaimResult {
-  claimed: boolean;
-  paid: boolean;
-  /** 微信支付 JSAPI 参数（微信端唤起支付用） */
-  payParams?: {
-    timeStamp: string;
-    nonceStr: string;
-    package: string;
-    signType: 'MD5' | 'RSA';
-    paySign: string;
-  };
-  order: Order;
 }
 
 /** 举报 */

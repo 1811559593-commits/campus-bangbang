@@ -7,10 +7,16 @@
   margin-bottom: $spacing-md;
   box-shadow: $shadow-card;
   transition: transform $transition-fast;
+  border: 2rpx solid transparent;
 
   &:active {
     transform: scale(0.99);
   }
+}
+
+.cardTopped {
+  border-color: $color-price;
+  box-shadow: 0 6rpx 20rpx rgba(255, 107, 43, 0.18);
 }
 
 .header {
@@ -20,6 +26,12 @@
   margin-bottom: $spacing-sm;
 }
 
+.headerBadges {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
 .typeBadge {
   display: inline-flex;
   padding: 4rpx 14rpx;
@@ -27,6 +39,17 @@
   background: $color-badge-bg;
   color: $color-primary;
   font-size: $font-size-xs;
+  white-space: nowrap;
+}
+
+.topBadge {
+  display: inline-flex;
+  padding: 4rpx 14rpx;
+  border-radius: $radius-xs;
+  background: $color-price-bg;
+  color: $color-price;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
   white-space: nowrap;
 }
 
@@ -130,6 +153,10 @@
   white-space: nowrap;
 }
 
-.feeTextHot {
+.topText {
+  font-size: $font-size-xs;
   color: $color-price;
+  font-weight: $font-weight-semibold;
+  margin-top: 6rpx;
+  white-space: nowrap;
 }

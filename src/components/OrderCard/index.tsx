@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text } from '@tarojs/components';
 import classnames from 'classnames';
 import type { Order } from '@/types';
-import { ORDER_TYPE_TEXT, formatMoney, fromNow, urgentText } from '@/utils/format';
+import { ORDER_TYPE_TEXT, formatMoney, fromNow, isTopped, urgentText } from '@/utils/format';
 import StatusTag from '@/components/StatusTag';
 import styles from './index.module.scss';
 
@@ -14,12 +14,22 @@ interface OrderCardProps {
 }
 
 const OrderCard: React.FC<OrderCardProps> = ({ order, showPoster = true, onClick }) => {
-  const urgent = order.status === 'pending';
+  const topped = isTopped(order);
   return (
-    <View className={styles.card} onClick={() => onClick?.(order)}>
+    <View
+      className={classnames(styles.card, topped && styles.cardTopped)}
+      onClick={() => onClick?.(order)}
+    >
       <View className={styles.header}>
-        <View className={styles.typeBadge}>
-          <Text>{ORDER_TYPE_TEXT[order.type]}</Text>
+        <View className={styles.headerBadges}>
+          <View className={styles.typeBadge}>
+            <Text>{ORDER_TYPE_TEXT[order.type]}</Text>
+          </View>
+          {topped ? (
+            <View className={styles.topBadge}>
+              <Text>🔥 加急</Text>
+            </View>
+          ) : null}
         </View>
         <StatusTag status={order.status} />
       </View>
@@ -58,9 +68,11 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, showPoster = true, onClick
             <Text className={styles.priceSymbol}>¥</Text>
             <Text className={styles.priceValue}>{formatMoney(order.price)}</Text>
           </View>
-          <Text className={classnames(styles.feeText, urgent && styles.feeTextHot)}>
-            接单信息费 ¥{formatMoney(order.infoFee)}
-          </Text>
+          {topped ? (
+            <Text className={styles.topText}>🔥 加急置顶中</Text>
+          ) : (
+            <Text className={styles.feeText}>接单免费 · 报酬线下结算</Text>
+          )}
         </View>
       </View>
     </View>
